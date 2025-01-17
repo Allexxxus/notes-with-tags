@@ -1,265 +1,233 @@
-"use server";
-import { createClient } from "@/utils/supabase/server";
+// "use server";
+// import { createClient } from "@/utils/supabase/server";
 
-///////////////////////////////////////////////////////////////////////
-///////////////////////////register/////////////////////////////////////
-///////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////
+// ///////////////////////////register/////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////
 
-export const register = async (formData: FormData) => {
-  const email = `${formData.get("email")?.toString()}@placeholder.com`;
-  const password = formData.get("password")?.toString();
-  const supabase = await createClient();
+// export const register = async (formData: FormData) => {
+//   const email = `${formData.get("email")?.toString()}@placeholder.com`;
+//   const password = formData.get("password")?.toString();
+//   const supabase = await createClient();
 
-  if (!email || !password) {
-    return;
-  }
+//   if (!email || !password) {
+//     return;
+//   }
 
-  await supabase.auth.signUp({
-    email,
-    password,
-  });
-};
+//   await supabase.auth.signUp({
+//     email,
+//     password,
+//   });
+// };
 
-///////////////////////////////////////////////////////////////////////
-///////////////////////////log in/////////////////////////////////////
-///////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////
+// ///////////////////////////log in/////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////
 
-export const login = async (formData: FormData) => {
-  const email = `${formData.get("email")?.toString()}@placeholder.com`;
-  const password = formData.get("password")?.toString();
-  const supabase = await createClient();
+// export const login = async (formData: FormData) => {
+//   const email = `${formData.get("email")?.toString()}@placeholder.com`;
+//   const password = formData.get("password")?.toString();
+//   const supabase = await createClient();
 
-  if (!email || !password) {
-    return;
-  }
+//   if (!email || !password) {
+//     return;
+//   }
 
-  await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-};
+//   await supabase.auth.signInWithPassword({
+//     email,
+//     password,
+//   });
+// };
 
-///////////////////////////////////////////////////////////////////////
-///////////////////////////post tweet/////////////////////////////////////
-///////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////
+// ///////////////////////////post tweet/////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////
 
-export const postTweet = async (formData: FormData) => {
-  //get message from the form
-  const message = formData.get("message")?.toString();
+// export const postTweet = async (formData: FormData) => {
+//   //get message from the form
+//   const message = formData.get("message")?.toString();
 
-  //get tags from the form
-  const tags = formData
-    .get("tags")
-    ?.toString()
-    .split(",")
-    .map((tag) => tag.trim());
+//   //get tags from the form
+//   const tags = formData
+//     .get("tags")
+//     ?.toString()
+//     .split(",")
+//     .map((tag) => tag.trim());
 
-  const supabase = await createClient();
+//   const supabase = await createClient();
 
-  //get current user from database
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+//   //get current user from database
+//   const {
+//     data: { user },
+//   } = await supabase.auth.getUser();
 
-  //insert post into database
-  const { data: postData, error: postError } = await supabase
-    .from("tweets")
-    .insert({ title: message, user_id: user?.id })
-    .select()
-    .single();
+//   //insert post into database
+//   const { data: postData, error: postError } = await supabase
+//     .from("tweets")
+//     .insert({ title: message, user_id: user?.id })
+//     .select()
+//     .single();
 
-  const postId = postData.id;
+//   const postId = postData.id;
 
-  //insert tags into database
-  for (const tag of tags) {
-    // Check if the tag already exists
-    const { data: tagData, error: tagError } = await supabase
-      .from("tags")
-      .select("id")
-      .eq("name", tag)
-      .single();
+//   //insert tags into database
+//   for (const tag of tags) {
+//     // Check if the tag already exists
+//     const { data: tagData, error: tagError } = await supabase
+//       .from("tags")
+//       .select("id")
+//       .eq("name", tag)
+//       .single();
 
-    let tagId;
+//     let tagId;
 
-    //////////////////////////////////////////
+//     //////////////////////////////////////////
 
-    //if Tag exists, use its ID
-    if (tagData) {
-      tagId = tagData.id;
-      const { data: postCount} = await supabase
-        .from("tags")
-        .select('post_count')
-        .eq('id', tagId)
-        .single();
-        const updatedPostCount = postCount.post_count + 1
-        console.log(updatedPostCount);
+//     //if Tag exists, use its ID
+//     if (tagData) {
+//       tagId = tagData.id;
+//       const { data: postCount} = await supabase
+//         .from("tags")
+//         .select('post_count')
+//         .eq('id', tagId)
+//         .single();
+//         const updatedPostCount = postCount.post_count + 1
+//         console.log(updatedPostCount);
       
-        const { data: newTagData, error: newTagError } = await supabase
-        .from("tags")
-        .update({ post_count: updatedPostCount})
-        .eq('id', tagId)
-        .select()
-        .single();
-    }
-    //if Tag does not exist, insert it
-    else {
-      const { data: newTagData, error: newTagError } = await supabase
-        .from("tags")
-        .insert({ name: tag, post_count: 1 })
-        .select()
-        .single();
+//         const { data: newTagData, error: newTagError } = await supabase
+//         .from("tags")
+//         .update({ post_count: updatedPostCount})
+//         .eq('id', tagId)
+//         .select()
+//         .single();
+//     }
+//     //if Tag does not exist, insert it
+//     else {
+//       const { data: newTagData, error: newTagError } = await supabase
+//         .from("tags")
+//         .insert({ name: tag, post_count: 1 })
+//         .select()
+//         .single();
 
-      // //if Tag exists, use its ID
-      // if (tagData) {
-      //   tagId = tagData.id;
+//       // //if Tag exists, use its ID
+//       // if (tagData) {
+//       //   tagId = tagData.id;
 
-      // }
-      // //if Tag does not exist, insert it
-      // else {
-      //   const { data: newTagData, error: newTagError } = await supabase
-      //     .from("tags")
-      //     .insert({ name: tag })
-      //     .select()
-      //     .single();
+//       // }
+//       // //if Tag does not exist, insert it
+//       // else {
+//       //   const { data: newTagData, error: newTagError } = await supabase
+//       //     .from("tags")
+//       //     .insert({ name: tag })
+//       //     .select()
+//       //     .single();
 
-      //////////////////////////////////////////
+//       //////////////////////////////////////////
 
-      if (newTagError) {
-        console.error("Error inserting tag:", newTagError);
-        return;
-      }
+//       if (newTagError) {
+//         console.error("Error inserting tag:", newTagError);
+//         return;
+//       }
 
-      tagId = newTagData.id; // Get the ID of the newly created tag
-    }
+//       tagId = newTagData.id; // Get the ID of the newly created tag
+//     }
 
-    console.log(postId);
-    console.log(tagId);
-    //Link the Post and Tags
-    const { error: linkError } = await supabase
-      .from("tweet_tags")
-      .insert([{ tweet_id: postId, tag_id: tagId }]);
+//     console.log(postId);
+//     console.log(tagId);
+//     //Link the Post and Tags
+//     const { error: linkError } = await supabase
+//       .from("tweet_tags")
+//       .insert([{ tweet_id: postId, tag_id: tagId }]);
 
-    if (linkError) {
-      console.error("Error linking post and tag:", linkError);
-    }
-  }
-};
+//     if (linkError) {
+//       console.error("Error linking post and tag:", linkError);
+//     }
+//   }
+// };
 
-///////////////////////////////////////////////////////////////////////
-///////////////////////////load Tweets/////////////////////////////////////
-///////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////
+// ///////////////////////////load Tweets/////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////
 
-export const loadTweets = async (tagIdToFilter) => {
-  const supabase = await createClient();
+// export const loadTweets = async (tagIdToFilter) => {
+//   const supabase = await createClient();
 
-  console.log(tagIdToFilter[0] === undefined);
-  console.log(tagIdToFilter.length);
+//   console.log(tagIdToFilter[0] === undefined);
+//   console.log(tagIdToFilter.length);
 
-  //////////////////////with tag
+//   //////////////////////with tag
 
-  if (tagIdToFilter[0] !== undefined) {
-    const { data: tweetIds } = await supabase
-      .from("tweet_tags")
-      .select("tweet_id")
-      .in("tag_id", tagIdToFilter);
+//   if (tagIdToFilter[0] !== undefined) {
+//     const { data: tweetIds } = await supabase
+//       .from("tweet_tags")
+//       .select("tweet_id")
+//       .in("tag_id", tagIdToFilter);
 
-    console.log(tweetIds);
+//     console.log(tweetIds);
 
-    const tweetIdsArray = tweetIds.map((tweetId) => tweetId.tweet_id);
+//     const tweetIdsArray = tweetIds.map((tweetId) => tweetId.tweet_id);
 
-    const { data: tweets } = await supabase
-      .from("tweets")
-      .select("*, profiles(*), tweet_tags(tag_id)")
-      .in("id", tweetIdsArray);
+//     const { data: tweets } = await supabase
+//       .from("tweets")
+//       .select("*, profiles(*), tweet_tags(tag_id)")
+//       .in("id", tweetIdsArray);
 
-    if (!tweets) return;
+//     if (!tweets) return;
 
-    const tweetsArray = await Promise.all(
-      tweets?.map(async (tweet) => {
-        const { data: tagsData, error: tagsError } = await supabase
-          .from("tags")
-          .select("*") // Specify the columns you want to select
-          .in(
-            "id",
-            tweet.tweet_tags.map((tag: { tag_id: any }) => tag.tag_id)
-          );
+//     const tweetsArray = await Promise.all(
+//       tweets?.map(async (tweet) => {
+//         const { data: tagsData, error: tagsError } = await supabase
+//           .from("tags")
+//           .select("*") // Specify the columns you want to select
+//           .in(
+//             "id",
+//             tweet.tweet_tags.map((tag: { tag_id: any }) => tag.tag_id)
+//           );
 
-        if (tagsError) {
-          console.error("Error fetching tags:", tagsError);
-          return { ...tweet, tags: [] }; // Return tweet with empty tags on error
-        }
+//         if (tagsError) {
+//           console.error("Error fetching tags:", tagsError);
+//           return { ...tweet, tags: [] }; // Return tweet with empty tags on error
+//         }
 
-        return {
-          ...tweet,
-          tags: tagsData, // Attach the fetched tags to the tweet
-        };
-      })
-    );
-    return tweetsArray;
-  }
-  //////////////////////without tag
-  else {
-    const { data: tweets } = await supabase
-      .from("tweets")
-      .select("*, profiles(*), tweet_tags(tag_id)");
+//         return {
+//           ...tweet,
+//           tags: tagsData, // Attach the fetched tags to the tweet
+//         };
+//       })
+//     );
+//     return tweetsArray;
+//   }
+//   //////////////////////without tag
+//   else {
+//     const { data: tweets } = await supabase
+//       .from("tweets")
+//       .select("*, profiles(*), tweet_tags(tag_id)");
 
-    if (!tweets) return;
+//     if (!tweets) return;
 
-    const tweetsArray = await Promise.all(
-      tweets?.map(async (tweet) => {
-        const { data: tagsData, error: tagsError } = await supabase
-          .from("tags")
-          .select("*") // Specify the columns you want to select
-          .in(
-            "id",
-            tweet.tweet_tags.map((tag: { tag_id: any }) => tag.tag_id)
-          );
+//     const tweetsArray = await Promise.all(
+//       tweets?.map(async (tweet) => {
+//         const { data: tagsData, error: tagsError } = await supabase
+//           .from("tags")
+//           .select("*") // Specify the columns you want to select
+//           .in(
+//             "id",
+//             tweet.tweet_tags.map((tag: { tag_id: any }) => tag.tag_id)
+//           );
 
-        if (tagsError) {
-          console.error("Error fetching tags:", tagsError);
-          return { ...tweet, tags: [] }; // Return tweet with empty tags on error
-        }
+//         if (tagsError) {
+//           console.error("Error fetching tags:", tagsError);
+//           return { ...tweet, tags: [] }; // Return tweet with empty tags on error
+//         }
 
-        return {
-          ...tweet,
-          tags: tagsData, // Attach the fetched tags to the tweet
-        };
-      })
-    );
-    console.log(tweetsArray);
+//         return {
+//           ...tweet,
+//           tags: tagsData, // Attach the fetched tags to the tweet
+//         };
+//       })
+//     );
+//     console.log(tweetsArray);
     
-    return tweetsArray;
-  }
-};
-
-//example of tag-count logic not working yet, some parts has to be incorporated into function postTweet()
-
-export default async function handler(req, res) {
-  if (req.method === "POST") {
-    const { postId, tagId } = req.body;
-
-    // Add the tag to the post_tags table
-    const { data: postTagData, error: postTagError } = await supabase
-      .from("post_tags")
-      .insert([{ post_id: postId, tag_id: tagId }]);
-
-    if (postTagError) {
-      return res.status(400).json({ error: postTagError.message });
-    }
-
-    // Increment the post_count in the tags table
-    const { data: tagData, error: tagError } = await supabase
-      .from("tags")
-      .update({ post_count: supabase.raw("post_count + 1") }) /////////////this part should be incorporated into code
-      .eq("id", tagId);
-
-    if (tagError) {
-      return res.status(400).json({ error: tagError.message });
-    }
-
-    return res.status(200).json({ postTagData, tagData });
-  } else {
-    res.setHeader("Allow", ["POST"]);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
-}
+//     return tweetsArray;
+//   }
+// };
