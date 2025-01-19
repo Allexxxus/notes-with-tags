@@ -145,89 +145,89 @@ export const signUp = async (formData: FormData) => {
 //   }
 // };
 
-// ///////////////////////////////////////////////////////////////////////
-// ///////////////////////////load Tweets/////////////////////////////////////
-// ///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
+///////////////////////////load Tweets/////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
 
-// export const loadTweets = async (tagIdToFilter) => {
-//   const supabase = await createClient();
+export const loadTweets = async (tagIdToFilter: string) => {
+  const supabase = await createClient();
 
-//   console.log(tagIdToFilter[0] === undefined);
-//   console.log(tagIdToFilter.length);
+  console.log(tagIdToFilter[0] === undefined);
+  console.log(tagIdToFilter.length);
 
-//   //////////////////////with tag
+  //////////////////////with tag
 
-//   if (tagIdToFilter[0] !== undefined) {
-//     const { data: tweetIds } = await supabase
-//       .from("tweet_tags")
-//       .select("tweet_id")
-//       .in("tag_id", tagIdToFilter);
+  if (tagIdToFilter[0] !== undefined) {
+    const { data: tweetIds } = await supabase
+      .from("tweet_tags")
+      .select("tweet_id")
+      .in("tag_id", tagIdToFilter);
 
-//     console.log(tweetIds);
+    console.log(tweetIds);
 
-//     const tweetIdsArray = tweetIds.map((tweetId) => tweetId.tweet_id);
+    const tweetIdsArray = tweetIds.map((tweetId) => tweetId.tweet_id);
 
-//     const { data: tweets } = await supabase
-//       .from("tweets")
-//       .select("*, profiles(*), tweet_tags(tag_id)")
-//       .in("id", tweetIdsArray);
+    const { data: tweets } = await supabase
+      .from("tweets")
+      .select("*, profiles(*), tweet_tags(tag_id)")
+      .in("id", tweetIdsArray);
 
-//     if (!tweets) return;
+    if (!tweets) return;
 
-//     const tweetsArray = await Promise.all(
-//       tweets?.map(async (tweet) => {
-//         const { data: tagsData, error: tagsError } = await supabase
-//           .from("tags")
-//           .select("*") // Specify the columns you want to select
-//           .in(
-//             "id",
-//             tweet.tweet_tags.map((tag: { tag_id: any }) => tag.tag_id)
-//           );
+    const tweetsArray = await Promise.all(
+      tweets?.map(async (tweet) => {
+        const { data: tagsData, error: tagsError } = await supabase
+          .from("tags")
+          .select("*") // Specify the columns you want to select
+          .in(
+            "id",
+            tweet.tweet_tags.map((tag: { tag_id: any }) => tag.tag_id)
+          );
 
-//         if (tagsError) {
-//           console.error("Error fetching tags:", tagsError);
-//           return { ...tweet, tags: [] }; // Return tweet with empty tags on error
-//         }
+        if (tagsError) {
+          console.error("Error fetching tags:", tagsError);
+          return { ...tweet, tags: [] }; // Return tweet with empty tags on error
+        }
 
-//         return {
-//           ...tweet,
-//           tags: tagsData, // Attach the fetched tags to the tweet
-//         };
-//       })
-//     );
-//     return tweetsArray;
-//   }
-//   //////////////////////without tag
-//   else {
-//     const { data: tweets } = await supabase
-//       .from("tweets")
-//       .select("*, profiles(*), tweet_tags(tag_id)");
+        return {
+          ...tweet,
+          tags: tagsData, // Attach the fetched tags to the tweet
+        };
+      })
+    );
+    return tweetsArray;
+  }
+  //////////////////////without tag
+  else {
+    const { data: tweets } = await supabase
+      .from("tweets")
+      .select("*, profiles(*), tweet_tags(tag_id)");
 
-//     if (!tweets) return;
+    if (!tweets) return;
 
-//     const tweetsArray = await Promise.all(
-//       tweets?.map(async (tweet) => {
-//         const { data: tagsData, error: tagsError } = await supabase
-//           .from("tags")
-//           .select("*") // Specify the columns you want to select
-//           .in(
-//             "id",
-//             tweet.tweet_tags.map((tag: { tag_id: any }) => tag.tag_id)
-//           );
+    const tweetsArray = await Promise.all(
+      tweets?.map(async (tweet) => {
+        const { data: tagsData, error: tagsError } = await supabase
+          .from("tags")
+          .select("*") // Specify the columns you want to select
+          .in(
+            "id",
+            tweet.tweet_tags.map((tag: { tag_id: any }) => tag.tag_id)
+          );
 
-//         if (tagsError) {
-//           console.error("Error fetching tags:", tagsError);
-//           return { ...tweet, tags: [] }; // Return tweet with empty tags on error
-//         }
+        if (tagsError) {
+          console.error("Error fetching tags:", tagsError);
+          return { ...tweet, tags: [] }; // Return tweet with empty tags on error
+        }
 
-//         return {
-//           ...tweet,
-//           tags: tagsData, // Attach the fetched tags to the tweet
-//         };
-//       })
-//     );
-//     console.log(tweetsArray);
+        return {
+          ...tweet,
+          tags: tagsData, // Attach the fetched tags to the tweet
+        };
+      })
+    );
+    console.log(tweetsArray);
     
-//     return tweetsArray;
-//   }
-// };
+    return tweetsArray;
+  }
+};
