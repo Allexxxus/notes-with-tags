@@ -1,6 +1,6 @@
 "use client"
 
-import { loadTweets } from "@/app/actions";
+// import { loadTweets } from "@/app/actions";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Tag } from "@/types";
 
