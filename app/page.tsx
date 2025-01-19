@@ -1,3 +1,4 @@
+import Authorisation from "@/components/authorisation";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function Home() {
@@ -8,6 +9,7 @@ export default async function Home() {
   return (
     <div>
       DIAMANT
+      <Authorisation />
       {
         tags?.map(tag => {
           return (

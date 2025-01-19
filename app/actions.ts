@@ -1,24 +1,24 @@
-// "use server";
-// import { createClient } from "@/utils/supabase/server";
+"use server";
+import { createClient } from "@/utils/supabase/server";
 
-// ///////////////////////////////////////////////////////////////////////
-// ///////////////////////////register/////////////////////////////////////
-// ///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
+///////////////////////////signUp/////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
 
-// export const register = async (formData: FormData) => {
-//   const email = `${formData.get("email")?.toString()}@placeholder.com`;
-//   const password = formData.get("password")?.toString();
-//   const supabase = await createClient();
+export const signUp = async (formData: FormData) => {
+  const email = `${formData.get("email")?.toString()}@placeholder.com`;
+  const password = formData.get("password")?.toString();
+  const supabase = await createClient();
 
-//   if (!email || !password) {
-//     return;
-//   }
+  if (!email || !password) {
+    return;
+  }
 
-//   await supabase.auth.signUp({
-//     email,
-//     password,
-//   });
-// };
+  await supabase.auth.signUp({
+    email,
+    password,
+  });
+};
 
 // ///////////////////////////////////////////////////////////////////////
 // ///////////////////////////log in/////////////////////////////////////
