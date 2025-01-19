@@ -2,12 +2,7 @@
 
 import { loadTweets } from "@/app/actions";
 import { useRouter, useSearchParams } from "next/navigation";
-
-interface Tag {
-    id: string; 
-    name: string;
-    post_count: number;
-}
+import { Tag } from "@/types";
 
 interface Props {
     tags: Tag[]; // Array of Tag objects

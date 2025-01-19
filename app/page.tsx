@@ -1,6 +1,7 @@
 import Authorisation from "@/components/authorisation";
-import Tags from "@/components/tags";
 import { createClient } from "@/utils/supabase/server";
+import Tags from "@/components/tags";
+import { Tag } from "@/types";
 
 export default async function Home() {
   const supabase = await createClient()
@@ -11,16 +12,7 @@ export default async function Home() {
     <div>
       DIAMANT
       <Authorisation />
-      <Tags tags={tags}/>
-      {/* {
-        tags?.map(tag => {
-          return (
-            <div key={tag.id}>
-              {tag.name}
-            </div>
-          )
-        })
-      } */}
+      <Tags tags={tags as Tag[] ?? []}/>
     </div>
   );
 }
