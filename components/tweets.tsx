@@ -1,9 +1,5 @@
-import { createClient } from "@/utils/supabase/server"
+
 import { Tweet } from "@/types";
-interface Tag {
-    id: number;
-    name: string;
-}
 
 interface TweetsProps {
     tweetsData: Tweet[];
