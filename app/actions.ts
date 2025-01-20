@@ -180,7 +180,7 @@ export const loadTweets = async (tagIdToFilter: string[]): Promise<Tweet[]> => {
           .select("*")
           .in(
             "id",
-            tweet.tweet_tags.map((tag: { tag_id: any }) => tag.tag_id)
+            tweet.tweet_tags.map((tag: { tag_id: string }) => tag.tag_id)
           );
 
         if (tagsError) {
@@ -211,7 +211,7 @@ export const loadTweets = async (tagIdToFilter: string[]): Promise<Tweet[]> => {
           .select("*") 
           .in(
             "id",
-            tweet.tweet_tags.map((tag: { tag_id: any }) => tag.tag_id)
+            tweet.tweet_tags.map((tag: { tag_id: string }) => tag.tag_id)
           );
 
         if (tagsError) {
