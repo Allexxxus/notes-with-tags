@@ -8,7 +8,7 @@ interface Props {
     tags: Tag[]; // Array of Tag objects
 }
 export default function Tags({tags}: Props) {
-    console.log(tags);
+    // console.log(tags);
     
     const router = useRouter()
     const searchParams  = useSearchParams()
