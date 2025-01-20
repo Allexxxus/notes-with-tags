@@ -1,5 +1,5 @@
 "use server";
-import { Tag, Tweet } from "@/types";
+import { Tweet } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 
 ///////////////////////////////////////////////////////////////////////
