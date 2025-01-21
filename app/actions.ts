@@ -159,7 +159,6 @@ export const loadTweets = async (tagIdToFilter: string[]): Promise<Tweet[]> => {
       .select("tweet_id")
       .in("tag_id", tagIdToFilter);
 
-    console.log(tweetIds);
     if(tweetIdsError) {
         console.error("Error fetching tweetIds:", tweetIdsError);
         return []
