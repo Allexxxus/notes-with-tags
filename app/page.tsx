@@ -5,7 +5,6 @@ import { Tag } from "@/types";
 import { loadTweets } from "./actions";
 import Tweets from "@/components/tweets";
 import { Tweet } from "@/types";
-import  PageProps  from 'next/types';
 
 
    export default async function Home({ searchParams }: { searchParams: Promise<{ tag: string[] }> }) {
