@@ -73,6 +73,11 @@ export const postTweet = async (formData: FormData) => {
     .select()
     .single();
 
+  if(postError) {
+    console.log('error posting new tweet:', postError);
+    
+  }
+
   const postId = postData.id;
 
   //insert tags into database
@@ -84,6 +89,8 @@ export const postTweet = async (formData: FormData) => {
       .eq("name", tag)
       .single();
 
+    console.log('error fetching tags id:', tagError);
+    
     let tagId;
 
     //////////////////////////////////////////
@@ -103,7 +110,8 @@ export const postTweet = async (formData: FormData) => {
         const updatedPostCount = postCount.post_count + 1
         console.log(updatedPostCount);
       
-        const { data: newTagData, error: newTagError } = await supabase
+        // const { data: newTagData, error: newTagError } = await supabase
+        await supabase
         .from("tags")
         .update({ post_count: updatedPostCount})
         .eq('id', tagId)
