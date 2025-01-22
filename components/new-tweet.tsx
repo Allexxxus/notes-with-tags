@@ -1,7 +1,6 @@
 import { postTweet } from "@/app/actions";
 import { SubmitButton } from "./submit-button";
 import { Input } from "./ui/input";
-import { Label } from "./ui/label";
 
 export default function NewTweet() {
     return (
