@@ -5,6 +5,7 @@ import { Tag } from "@/types";
 import { loadTweets } from "./actions";
 import Tweets from "@/components/tweets";
 import { Tweet } from "@/types";
+import NewTweet from "@/components/new-tweet";
 
 
    export default async function Home({ searchParams }: { searchParams: Promise<{ tag: string[] }> }) {
@@ -35,7 +36,8 @@ import { Tweet } from "@/types";
       DIAMANT
       <Authorisation />
       <Tags tags={tags as Tag[] ?? []} />
-      <Tweets tweetsData={tweets} />;
+      <NewTweet />
+      <Tweets tweetsData={tweets} />
     </div>
   );
 }

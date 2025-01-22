@@ -40,111 +40,119 @@ export const signUp = async (formData: FormData) => {
 //   });
 // };
 
-// ///////////////////////////////////////////////////////////////////////
-// ///////////////////////////post tweet/////////////////////////////////////
-// ///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
+///////////////////////////post tweet/////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
 
-// export const postTweet = async (formData: FormData) => {
-//   //get message from the form
-//   const message = formData.get("message")?.toString();
+export const postTweet = async (formData: FormData) => {
+  //get message from the form
+  const message = formData.get("message")?.toString();
 
-//   //get tags from the form
-//   const tags = formData
-//     .get("tags")
-//     ?.toString()
-//     .split(",")
-//     .map((tag) => tag.trim());
+  //get tags from the form
+  const tags = formData
+    .get("tags")
+    ?.toString()
+    .split(",")
+    .map((tag) => tag.trim());
 
-//   const supabase = await createClient();
+  if(!tags) {
+    return
+  }
 
-//   //get current user from database
-//   const {
-//     data: { user },
-//   } = await supabase.auth.getUser();
+  const supabase = await createClient();
 
-//   //insert post into database
-//   const { data: postData, error: postError } = await supabase
-//     .from("tweets")
-//     .insert({ title: message, user_id: user?.id })
-//     .select()
-//     .single();
+  //get current user from database
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-//   const postId = postData.id;
+  //insert post into database
+  const { data: postData, error: postError } = await supabase
+    .from("tweets")
+    .insert({ title: message, user_id: user?.id })
+    .select()
+    .single();
 
-//   //insert tags into database
-//   for (const tag of tags) {
-//     // Check if the tag already exists
-//     const { data: tagData, error: tagError } = await supabase
-//       .from("tags")
-//       .select("id")
-//       .eq("name", tag)
-//       .single();
+  const postId = postData.id;
 
-//     let tagId;
+  //insert tags into database
+  for (const tag of tags) {
+    // Check if the tag already exists
+    const { data: tagData, error: tagError } = await supabase
+      .from("tags")
+      .select("id")
+      .eq("name", tag)
+      .single();
 
-//     //////////////////////////////////////////
+    let tagId;
 
-//     //if Tag exists, use its ID
-//     if (tagData) {
-//       tagId = tagData.id;
-//       const { data: postCount} = await supabase
-//         .from("tags")
-//         .select('post_count')
-//         .eq('id', tagId)
-//         .single();
-//         const updatedPostCount = postCount.post_count + 1
-//         console.log(updatedPostCount);
+    //////////////////////////////////////////
+
+    //if Tag exists, use its ID
+    if (tagData) {
+      tagId = tagData.id;
+      const { data: postCount} = await supabase
+        .from("tags")
+        .select('post_count')
+        .eq('id', tagId)
+        .single();
+
+        if(!postCount) {
+          return
+        }
+        const updatedPostCount = postCount.post_count + 1
+        console.log(updatedPostCount);
       
-//         const { data: newTagData, error: newTagError } = await supabase
-//         .from("tags")
-//         .update({ post_count: updatedPostCount})
-//         .eq('id', tagId)
-//         .select()
-//         .single();
-//     }
-//     //if Tag does not exist, insert it
-//     else {
-//       const { data: newTagData, error: newTagError } = await supabase
-//         .from("tags")
-//         .insert({ name: tag, post_count: 1 })
-//         .select()
-//         .single();
+        const { data: newTagData, error: newTagError } = await supabase
+        .from("tags")
+        .update({ post_count: updatedPostCount})
+        .eq('id', tagId)
+        .select()
+        .single();
+    }
+    //if Tag does not exist, insert it
+    else {
+      const { data: newTagData, error: newTagError } = await supabase
+        .from("tags")
+        .insert({ name: tag, post_count: 1 })
+        .select()
+        .single();
 
-//       // //if Tag exists, use its ID
-//       // if (tagData) {
-//       //   tagId = tagData.id;
+      // //if Tag exists, use its ID
+      // if (tagData) {
+      //   tagId = tagData.id;
 
-//       // }
-//       // //if Tag does not exist, insert it
-//       // else {
-//       //   const { data: newTagData, error: newTagError } = await supabase
-//       //     .from("tags")
-//       //     .insert({ name: tag })
-//       //     .select()
-//       //     .single();
+      // }
+      // //if Tag does not exist, insert it
+      // else {
+      //   const { data: newTagData, error: newTagError } = await supabase
+      //     .from("tags")
+      //     .insert({ name: tag })
+      //     .select()
+      //     .single();
 
-//       //////////////////////////////////////////
+      //////////////////////////////////////////
 
-//       if (newTagError) {
-//         console.error("Error inserting tag:", newTagError);
-//         return;
-//       }
+      if (newTagError) {
+        console.error("Error inserting tag:", newTagError);
+        return;
+      }
 
-//       tagId = newTagData.id; // Get the ID of the newly created tag
-//     }
+      tagId = newTagData.id; // Get the ID of the newly created tag
+    }
 
-//     console.log(postId);
-//     console.log(tagId);
-//     //Link the Post and Tags
-//     const { error: linkError } = await supabase
-//       .from("tweet_tags")
-//       .insert([{ tweet_id: postId, tag_id: tagId }]);
+    console.log(postId);
+    console.log(tagId);
+    //Link the Post and Tags
+    const { error: linkError } = await supabase
+      .from("tweet_tags")
+      .insert([{ tweet_id: postId, tag_id: tagId }]);
 
-//     if (linkError) {
-//       console.error("Error linking post and tag:", linkError);
-//     }
-//   }
-// };
+    if (linkError) {
+      console.error("Error linking post and tag:", linkError);
+    }
+  }
+}
 
 ///////////////////////////////////////////////////////////////////////
 ///////////////////////////load Tweets/////////////////////////////////////
