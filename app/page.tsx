@@ -6,6 +6,7 @@ import { loadTweets } from "./actions";
 import Tweets from "@/components/tweets";
 import { Tweet } from "@/types";
 import NewTweet from "@/components/new-tweet";
+import Header from "@/components/header";
 
 
    export default async function Home({ searchParams }: { searchParams: Promise<{ tag: string[] }> }) {
@@ -33,8 +34,8 @@ import NewTweet from "@/components/new-tweet";
   
   return (
     <div>
-      DIAMANT
-      <Authorisation />
+      <Header />
+      
       <Tags tags={tags as Tag[] ?? []} />
       <NewTweet />
       <Tweets tweetsData={tweets} />
